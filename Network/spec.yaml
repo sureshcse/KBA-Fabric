@@ -1,12 +1,17 @@
 fabric:
-  cas:
+  # Declaring unique addresses of the Certificate Authorities 
+  # of all organizations.
+  cas:  
   - "ca1.mvd.auto.com"
   - "ca1.manufacturer.auto.com"
   - "ca1.dealer.auto.com"
+  # Declaring unique addresses of the peers of organisations. 
+  # There can be multiple peers for each organizations
   peers: 
   - "peer1.mvd.auto.com"
   - "peer1.manufacturer.auto.com"
   - "peer1.dealer.auto.com"
+  # Declaring unique addresses of the orderers.
   orderers:
   - "orderer1.auto.com"
   - "orderer2.auto.com"
