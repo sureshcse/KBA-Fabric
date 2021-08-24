@@ -5,6 +5,7 @@
 'use strict';
 
 const { Contract } = require('fabric-contract-api');
+const CarContract = require('./car-contract');
 
 async function getCollectionName(ctx) {
     const collectionName = 'CollectionOrder';
@@ -80,6 +81,67 @@ class OrderContract extends Contract {
             return `Under following MSP: ${mspID} cannot able to perform this action`;
         }
     }
+
+    async queryAllOrders(ctx, queryString) {
+        if (queryString.length === 0) {
+            queryString = JSON.stringify({
+                selector: {
+                    assetType: 'order',
+                },
+            });
+        }
+
+        const collectionName = await getCollectionName(ctx);
+        let resultsIterator = await ctx.stub.getPrivateDataQueryResult(
+            collectionName,
+            queryString
+        );
+
+        let carContract = new CarContract();
+        let result = await carContract.getAllResults(resultsIterator.iterator);
+        // NOTE: If the above line of code isn't working please uncomment the below line
+        // and un comment getAllResults() function in this file
+
+        // let result = await this.getAllResults(resultsIterator.iterator);
+
+        return JSON.stringify(result);
+    }
+
+    async getOrdersByRange(ctx, startKey, endKey) {
+        const collectionName = await getCollectionName(ctx);
+        let resultsIterator = await ctx.stub.getPrivateDataByRange(
+            collectionName,
+            startKey,
+            endKey
+        );
+        let carContract = new CarContract();
+        let result = await carContract.getAllResults(resultsIterator.iterator);
+        // NOTE: If the above line of code isn't working please uncomment the below line
+        // and un comment getAllResults() function in this file
+
+        // let result = await this.getAllResults(resultsIterator.iterator);
+
+        return JSON.stringify(result);
+    }
+
+    // async getAllResults(iterator) {
+    //     let allResult = [];
+
+    //     for (
+    //         let res = await iterator.next();
+    //         !res.done;
+    //         res = await iterator.next()
+    //     ) {
+    //         if (res.value && res.value.value.toString()) {
+    //             let jsonRes = {};
+    //             jsonRes.Key = res.value.key;
+    //             jsonRes.Record = JSON.parse(res.value.value.toString());
+    //             allResult.push(jsonRes);
+    //         }
+    //     }
+    //     await iterator.close();
+    //     return allResult;
+    // }
 }
 
 module.exports = OrderContract;

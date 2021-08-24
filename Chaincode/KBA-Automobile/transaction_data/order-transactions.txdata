@@ -35,5 +35,22 @@
       "Order-001"
     ],
     "transientData": {}
+  },
+  {
+    "transactionName": "queryAllOrders",
+    "transactionLabel": "A test queryAllOrders transaction",
+    "arguments": [
+      ""
+    ],
+    "transientData": {}
+  },
+  {
+    "transactionName": "getOrdersByRange",
+    "transactionLabel": "A test getOrdersByRange transaction",
+    "arguments": [
+      "",
+      ""
+    ],
+    "transientData": {}
   }
 ]

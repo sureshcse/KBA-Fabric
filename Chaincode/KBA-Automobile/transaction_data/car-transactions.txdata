@@ -35,5 +35,37 @@
       "Car-001"
     ],
     "transientData": {}
+  },
+  {
+    "transactionName": "queryAllCars",
+    "transactionLabel": "A test queryAllCars transaction",
+    "arguments": [],
+    "transientData": {}
+  },
+  {
+    "transactionName": "getCarsByRange",
+    "transactionLabel": "A test getCarsByRange transaction",
+    "arguments": [
+      "",
+      ""
+    ],
+    "transientData": {}
+  },
+  {
+    "transactionName": "getCarsWithPagination",
+    "transactionLabel": "A test getCarsWithPagination transaction",
+    "arguments": [
+      "2",
+      ""
+    ],
+    "transientData": {}
+  },
+  {
+    "transactionName": "getCarsHistory",
+    "transactionLabel": "A test getCarsHistory transaction",
+    "arguments": [
+      "Car-001"
+    ],
+    "transientData": {}
   }
 ]
