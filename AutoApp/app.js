@@ -11,6 +11,8 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
+
+// Set View Engine as hbs
 app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
