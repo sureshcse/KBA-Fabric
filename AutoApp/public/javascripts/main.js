@@ -69,3 +69,56 @@ function ManWriteData() {
         })        
     }    
 }
+
+//manquery function
+function ManQueryData() {
+    const Qvin = document.getElementById('QueryVinNumbMan').value;
+
+    if (Qvin.length==0) {
+        const data = {
+            title: "Enter a Valid Qvin Number",
+            footer: "This is a mandatory field",
+            icon: "warning"
+        }
+        swalBasic(data)  
+    } else {
+        fetch('/manuread',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',              
+            },
+            body: JSON.stringify({QVinNumb: Qvin})
+        })
+        .then(function(response){
+            console.log(response);
+            return response.json();
+        })
+        .then(function (Cardata){
+            dataBuf = Cardata["Cardata"]
+            swal.fire({
+                // toast: true,
+                icon: `success`,
+                title: `Current status of car with Qvin ${Qvin} :`,
+                animation: false,
+                position: 'center',
+                html: `<h3>${dataBuf}</h3>`,
+                showConfirmButton: true,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', swal.stopTimer)
+                    toast.addEventListener('mouseleave', swal.resumeTimer)
+                }
+            }) 
+        })
+        .catch(function(error){
+            const data = {
+                title: "Error in processing Request",
+                footer: "Something went wrong !",
+                icon: "error"
+            }
+            swalBasic(data);        
+        })        
+    }    
+
+}
