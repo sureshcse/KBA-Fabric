@@ -70,7 +70,7 @@ class OrderContract extends Contract {
 
     async deleteOrder(ctx, orderId) {
         const mspID = ctx.clientIdentity.getMSPID();
-        if (mspID === 'dealer-auto-com') {
+        if (mspID === 'dealer-auto-com' || mspID === 'manufacturer-auto-com') {
             const exists = await this.orderExists(ctx, orderId);
             if (!exists) {
                 throw new Error(`The asset order ${orderId} does not exist`);

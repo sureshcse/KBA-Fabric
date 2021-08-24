@@ -5,6 +5,7 @@
 'use strict';
 
 const { Contract } = require('fabric-contract-api');
+const OrderContract = require('./order-contract');
 
 class CarContract extends Contract {
     async carExists(ctx, carId) {
@@ -61,6 +62,80 @@ class CarContract extends Contract {
                 throw new Error(`The car ${carId} does not exist`);
             }
             await ctx.stub.deleteState(carId);
+        } else {
+            return `User under following MSP:${mspID} cannot able to perform this action`;
+        }
+    }
+
+    async checkMatchingOrders(ctx, carId) {
+        const exists = await this.carExists(ctx, carId);
+        if (!exists) {
+            throw new Error(`The car ${carId} does not exist`);
+        }
+
+        const carBuffer = await ctx.stub.getState(carId);
+        const carDetails = JSON.parse(carBuffer.toString());
+
+        const queryString = {
+            selector: {
+                assetType: 'order',
+                make: carDetails.make,
+                model: carDetails.model,
+                color: carDetails.color,
+            },
+        };
+
+        const orderContract = new OrderContract();
+        const orders = await orderContract.queryAllOrders(
+            ctx,
+            JSON.stringify(queryString)
+        );
+
+        return orders;
+    }
+
+    async matchOrder(ctx, carId, orderId) {
+        const orderContract = new OrderContract();
+
+        const carDetails = await this.readCar(ctx, carId);
+        const orderDetails = await orderContract.readOrder(ctx, orderId);
+
+        if (
+            orderDetails.make === carDetails.make &&
+      orderDetails.model === carDetails.model &&
+      orderDetails.color === carDetails.color
+        ) {
+            carDetails.ownedBy = orderDetails.dealerName;
+            carDetails.status = 'Assigned to a Dealer';
+
+            const newCarBuffer = Buffer.from(JSON.stringify(carDetails));
+            await ctx.stub.putState(carId, newCarBuffer);
+
+            await orderContract.deleteOrder(ctx, orderId);
+            return `Car ${carId} is assigned to ${orderDetails.dealerName}`;
+        } else {
+            return 'Order is not matching';
+        }
+    }
+
+    async registerCar(ctx, carId, ownerName, registrationNumber) {
+        const mspID = ctx.clientIdentity.getMSPID();
+        if (mspID === 'mvd-auto-com') {
+            const exists = await this.carExists(ctx, carId);
+            if (!exists) {
+                throw new Error(`The car ${carId} does not exist`);
+            }
+
+            const carBuffer = await ctx.stub.getState(carId);
+            const carDetails = JSON.parse(carBuffer.toString());
+
+            carDetails.status = `Registered to ${ownerName} wih plate number ${registrationNumber}`;
+            carDetails.ownedBy = ownerName;
+
+            const newCarBuffer = Buffer.from(JSON.stringify(carDetails));
+            await ctx.stub.putState(carId, newCarBuffer);
+
+            return `Car ${carId} is successfully registered to ${ownerName}`;
         } else {
             return `User under following MSP:${mspID} cannot able to perform this action`;
         }
