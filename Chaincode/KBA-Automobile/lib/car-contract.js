@@ -39,6 +39,10 @@ class CarContract extends Contract {
             };
             const buffer = Buffer.from(JSON.stringify(carAsset));
             await ctx.stub.putState(carId, buffer);
+
+            let addCarEventData = { Type: 'Car creation', Model: model };
+            await ctx.stub.setEvent('addCarEvent', Buffer.from(JSON.stringify(addCarEventData)));
+
         } else {
             return `User under following MSP:${mspID} cannot able to perform this action`;
         }
