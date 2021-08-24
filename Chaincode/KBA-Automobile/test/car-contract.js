@@ -18,32 +18,48 @@ chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
 class TestContext {
-
     constructor() {
         this.stub = sinon.createStubInstance(ChaincodeStub);
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
         this.logger = {
-            getLogger: sinon.stub().returns(sinon.createStubInstance(winston.createLogger().constructor)),
+            getLogger: sinon
+                .stub()
+                .returns(sinon.createStubInstance(winston.createLogger().constructor)),
             setLevel: sinon.stub(),
         };
     }
-
 }
 
 describe('CarContract', () => {
-
     let contract;
     let ctx;
 
     beforeEach(() => {
         contract = new CarContract();
         ctx = new TestContext();
-        ctx.stub.getState.withArgs('1001').resolves(Buffer.from('{"value":"car 1001 value"}'));
-        ctx.stub.getState.withArgs('1002').resolves(Buffer.from('{"value":"car 1002 value"}'));
+        ctx.stub.getState
+            .withArgs('1001')
+            .resolves(
+                Buffer.from(
+                    '{"make":"Sedan","model":"X1","color":"Red","dateOfManufacture":"10-10-2020","status":"In Factory","ownedBy":"Factory-01","assetType":"car"}'
+                )
+            );
+        ctx.stub.getState
+            .withArgs('1002')
+            .resolves(
+                Buffer.from(
+                    '{"make":"Sedan","model":"X1","color":"Red","dateOfManufacture":"10-10-2020","status":"In Factory","ownedBy":"Factory-01","assetType":"car"}'
+                )
+            );
+
+        ctx.clientIdentity = {
+            getMSPID: function () {
+                return 'manufacturer-auto-com';
+            },
+        };
     });
 
     describe('#carExists', () => {
-
         it('should return true for a car', async () => {
             await contract.carExists(ctx, '1001').should.eventually.be.true;
         });
@@ -51,58 +67,72 @@ describe('CarContract', () => {
         it('should return false for a car that does not exist', async () => {
             await contract.carExists(ctx, '1003').should.eventually.be.false;
         });
-
     });
 
     describe('#createCar', () => {
-
         it('should create a car', async () => {
-            await contract.createCar(ctx, '1003', 'car 1003 value');
-            ctx.stub.putState.should.have.been.calledOnceWithExactly('1003', Buffer.from('{"value":"car 1003 value"}'));
+            await contract.createCar(
+                ctx,
+                '1003',
+                'Sedan',
+                'X1',
+                'Red',
+                '10-10-2020',
+                'Factory-01'
+            );
+            ctx.stub.putState.should.have.been.calledOnceWithExactly(
+                '1003',
+                Buffer.from(
+                    '{"make":"Sedan","model":"X1","color":"Red","dateOfManufacture":"10-10-2020","status":"In Factory","ownedBy":"Factory-01","assetType":"car"}'
+                )
+            );
         });
 
         it('should throw an error for a car that already exists', async () => {
-            await contract.createCar(ctx, '1001', 'myvalue').should.be.rejectedWith(/The car 1001 already exists/);
+            await contract
+                .createCar(
+                    ctx,
+                    '1001',
+                    'Sedan',
+                    'X1',
+                    'Red',
+                    '10-10-2020',
+                    'Factory-01'
+                )
+                .should.be.rejectedWith(/The car 1001 already exists/);
         });
-
     });
 
     describe('#readCar', () => {
-
         it('should return a car', async () => {
-            await contract.readCar(ctx, '1001').should.eventually.deep.equal({ value: 'car 1001 value' });
+            await contract.readCar(ctx, '1001').should.eventually.deep.equal({
+                make: 'Sedan',
+                model: 'X1',
+                color: 'Red',
+                dateOfManufacture: '10-10-2020',
+                status: 'In Factory',
+                ownedBy: 'Factory-01',
+                assetType: 'car',
+            });
         });
 
         it('should throw an error for a car that does not exist', async () => {
-            await contract.readCar(ctx, '1003').should.be.rejectedWith(/The car 1003 does not exist/);
+            await contract
+                .readCar(ctx, '1003')
+                .should.be.rejectedWith(/The car 1003 does not exist/);
         });
-
-    });
-
-    describe('#updateCar', () => {
-
-        it('should update a car', async () => {
-            await contract.updateCar(ctx, '1001', 'car 1001 new value');
-            ctx.stub.putState.should.have.been.calledOnceWithExactly('1001', Buffer.from('{"value":"car 1001 new value"}'));
-        });
-
-        it('should throw an error for a car that does not exist', async () => {
-            await contract.updateCar(ctx, '1003', 'car 1003 new value').should.be.rejectedWith(/The car 1003 does not exist/);
-        });
-
     });
 
     describe('#deleteCar', () => {
-
         it('should delete a car', async () => {
             await contract.deleteCar(ctx, '1001');
             ctx.stub.deleteState.should.have.been.calledOnceWithExactly('1001');
         });
 
         it('should throw an error for a car that does not exist', async () => {
-            await contract.deleteCar(ctx, '1003').should.be.rejectedWith(/The car 1003 does not exist/);
+            await contract
+                .deleteCar(ctx, '1003')
+                .should.be.rejectedWith(/The car 1003 does not exist/);
         });
-
     });
-
 });

@@ -7,20 +7,40 @@
 const { Contract } = require('fabric-contract-api');
 
 class CarContract extends Contract {
-
     async carExists(ctx, carId) {
         const buffer = await ctx.stub.getState(carId);
-        return (!!buffer && buffer.length > 0);
+        return !!buffer && buffer.length > 0;
     }
 
-    async createCar(ctx, carId, value) {
-        const exists = await this.carExists(ctx, carId);
-        if (exists) {
-            throw new Error(`The car ${carId} already exists`);
+    async createCar(
+        ctx,
+        carId,
+        make,
+        model,
+        color,
+        dateOfManufacture,
+        manufactureName
+    ) {
+        const mspID = ctx.clientIdentity.getMSPID();
+        if (mspID === 'manufacturer-auto-com') {
+            const exists = await this.carExists(ctx, carId);
+            if (exists) {
+                throw new Error(`The car ${carId} already exists`);
+            }
+            const carAsset = {
+                make,
+                model,
+                color,
+                dateOfManufacture,
+                status: 'In Factory',
+                ownedBy: manufactureName,
+                assetType: 'car',
+            };
+            const buffer = Buffer.from(JSON.stringify(carAsset));
+            await ctx.stub.putState(carId, buffer);
+        } else {
+            return `User under following MSP:${mspID} cannot able to perform this action`;
         }
-        const asset = { value };
-        const buffer = Buffer.from(JSON.stringify(asset));
-        await ctx.stub.putState(carId, buffer);
     }
 
     async readCar(ctx, carId) {
@@ -33,24 +53,18 @@ class CarContract extends Contract {
         return asset;
     }
 
-    async updateCar(ctx, carId, newValue) {
-        const exists = await this.carExists(ctx, carId);
-        if (!exists) {
-            throw new Error(`The car ${carId} does not exist`);
-        }
-        const asset = { value: newValue };
-        const buffer = Buffer.from(JSON.stringify(asset));
-        await ctx.stub.putState(carId, buffer);
-    }
-
     async deleteCar(ctx, carId) {
-        const exists = await this.carExists(ctx, carId);
-        if (!exists) {
-            throw new Error(`The car ${carId} does not exist`);
+        const mspID = ctx.clientIdentity.getMSPID();
+        if (mspID === 'manufacturer-auto-com') {
+            const exists = await this.carExists(ctx, carId);
+            if (!exists) {
+                throw new Error(`The car ${carId} does not exist`);
+            }
+            await ctx.stub.deleteState(carId);
+        } else {
+            return `User under following MSP:${mspID} cannot able to perform this action`;
         }
-        await ctx.stub.deleteState(carId);
     }
-
 }
 
 module.exports = CarContract;
