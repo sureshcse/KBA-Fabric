@@ -1,0 +1,39 @@
+[
+  {
+    "transactionName": "orderExists",
+    "transactionLabel": "A test orderExists transaction",
+    "arguments": [
+      "Order-001"
+    ],
+    "transientData": {}
+  },
+  {
+    "transactionName": "createOrder",
+    "transactionLabel": "A test createOrder transaction",
+    "arguments": [
+      "Order-003"
+    ],
+    "transientData": {
+      "make": "Sedan",
+      "model": "X1",
+      "color": "Red",
+      "dealerName": "Dealer-1"
+    }
+  },
+  {
+    "transactionName": "readOrder",
+    "transactionLabel": "A test readOrder transaction",
+    "arguments": [
+      "Order-001"
+    ],
+    "transientData": {}
+  },
+  {
+    "transactionName": "deleteOrder",
+    "transactionLabel": "A test deleteOrder transaction",
+    "arguments": [
+      "Order-001"
+    ],
+    "transientData": {}
+  }
+]
