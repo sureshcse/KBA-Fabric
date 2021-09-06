@@ -1,3 +1,4 @@
 # Dependency directories
 node_modules/
-
+vars/
+AutoApp/package-lock.json
