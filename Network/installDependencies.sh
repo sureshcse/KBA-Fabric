@@ -133,7 +133,11 @@ installNodeJs(){
         node -v
         type node
         printf "\e[32m✔ nodejs installed \\n"
-    else 
+        echo "Installing Build Essentials"
+        sudo apt install build-essential
+    else
+        echo "Installing Build Essentials"
+        sudo apt install build-essential 
         printf "\e[34m✔ nodejs is installed, skipping... \\n \\n"
     fi
 }
