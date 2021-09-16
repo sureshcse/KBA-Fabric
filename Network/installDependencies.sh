@@ -19,7 +19,7 @@ echo "                           ";
 function nextStep() {
   echo "Reboot your machine after dependency installation"
   echo "To download minifab Binary use.... " 
-  echo "./InstallAllDependencies.sh bin "
+  echo "./installDependencies.sh bin "
   echo "- 'bin' - Downloads and copies minifab Binary"
 }
 
