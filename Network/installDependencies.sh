@@ -64,16 +64,24 @@ installDocker(){
     local return_=1
     type docker >/dev/null 2>&1 || { local return_=0; }
     if [ $return_ -eq 0 ]; then
+    	 echo "Updating apt repository"
+    	 sudo apt-get install ca-certificates curl gnupg lsb-release
+    	 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
         printf "\e[91m✘ docker is not installed \\n"
         echo "Getting Docker"
-        sudo apt install curl -y
-        curl -fsSL https://get.docker.com -o get-docker.sh
-        chmod +x get-docker.sh
-        echo "Installing Docker"
-        ./get-docker.sh
-        echo "Installing docker-compose"
-        sudo apt install docker-compose -y
-        rm get-docker.sh
+        echo \
+	  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+	  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt-get update
+        sudo apt-get install docker-ce docker-ce-cli containerd.io
+        #sudo apt install curl -y
+        #curl -fsSL https://get.docker.com -o get-docker.sh
+        #chmod +x get-docker.sh
+        #echo "Installing Docker"
+        #./get-docker.sh
+        #echo "Installing docker-compose"
+        #sudo apt install docker-compose -y
+        #rm get-docker.sh
         printf "\e[32m✔ docker installed \\n \\n"
     else 
         type docker
