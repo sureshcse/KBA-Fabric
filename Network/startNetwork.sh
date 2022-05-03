@@ -2,6 +2,16 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+echo "docker cleanup...."
+docker system prune
+
+sleep 10
+
+##echo "minifab cleanup...."
+##minifab cleanup
+
+##sleep 10
+
 echo "Bootstrapping ......."
 minifab netup -s couchdb -e true -o manufacturer.auto.com
 

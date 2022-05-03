@@ -20,13 +20,12 @@ class clientApplication {
 
         } catch (error) {
             console.log("Error occured",error)
-           
        } finally {
            console.log("Disconnect from the gateway.")
            gateway.disconnect()
        }
 
-   }   
+   }
   //Querying a car
    async generateAndEvaluateTxn(role,identityLabel,channelName,chaincodeName,contractName,txnName,...args){
     let gateway = new Gateway();
@@ -44,14 +43,12 @@ class clientApplication {
 
      } catch (error) {
          console.log("Error occured",error)
-        
     } finally {
         console.log("Disconnect from the gateway.")
         gateway.disconnect()
     }
 
 }
-   
 
 }
 

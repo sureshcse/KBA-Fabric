@@ -9,7 +9,7 @@ ManufacturerClient.generateAndSubmitTxn(
     "KBA-Automobile",
     "CarContract",
     "createCar",
-    "CAR01",
+    "CAR02",
     "Hatchback",
     "Nexon",
     "Blue",

@@ -1,7 +1,7 @@
 {
-  "name": "KBA-Automobile",
+  "name": "KBA-Auction",
   "version": "0.0.5",
-  "description": "My Smart Contract",
+  "description": "Car Auction Contract",
   "main": "index.js",
   "engines": {
     "node": ">=8",
