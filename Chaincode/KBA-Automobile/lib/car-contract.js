@@ -23,12 +23,13 @@ class CarContract extends Contract {
         manufactureName
     ) {
         const mspID = ctx.clientIdentity.getMSPID();
-        if (mspID === 'manufacturer-auto-com') {
-            const exists = await this.carExists(ctx, carId);
-            if (exists) {
-                throw new Error(`The car ${carId} already exists`);
-            }
-            const carAsset = {
+        if(mspID == 'maunfacturer-auto-com'){
+        
+        const exists = await this.carExists(ctx, carId);
+        if (exists) {
+            throw new Error(`The car ${carId} already exists`);
+        }
+        const carAsset = { 
                 make,
                 model,
                 color,
