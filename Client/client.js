@@ -20,6 +20,7 @@ class clientApplication {
 
         } catch (error) {
             console.log("Error occured",error)
+
        } finally {
            console.log("Disconnect from the gateway.")
            gateway.disconnect()
@@ -43,12 +44,14 @@ class clientApplication {
 
      } catch (error) {
          console.log("Error occured",error)
+
     } finally {
         console.log("Disconnect from the gateway.")
         gateway.disconnect()
     }
 
 }
+
 
 }
 

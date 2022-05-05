@@ -7,10 +7,10 @@ docker system prune
 
 sleep 10
 
-##echo "minifab cleanup...."
-##minifab cleanup
+#echo "minifab cleanup...."
+#minifab cleanup
 
-##sleep 10
+#sleep 10
 
 echo "Bootstrapping ......."
 minifab netup -s couchdb -e true -o manufacturer.auto.com

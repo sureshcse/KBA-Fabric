@@ -10,10 +10,9 @@
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "fabric-network": "^2.2.8",
-    "fs": "0.0.1-security",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "path": "^0.12.7"
+    "sweetalert2": "^11.0.20"
   }
 }
